@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style type="text/css">
+ .match-cell{height:90px;vertical-align:middle;display:table-cell;}
+</style>
+<h1 style="margin-bottom:0;padding-bottom:0;">Match!</h1>
+<p style="margin-top:0;">Draw a line from the name to the picture it matches.</p>
+  
+ <div style="width:300px;float:left;">
+ {% for page in pages %}
+   <div class="match-cell">{{ page.title }}</div><br>
+ {% endfor %}
+ </div>
+<!--  {{ shuffle(pages) }} -->
+ <div style="width:300px;float:right;">
+ {% for page in pages %}
+   <div class="match-cell">
+   <img class="detail-thumbnail" src="./images/{{page.id}}/{{ page.thumb }}" height="80">
+   </div><br>
+ {% endfor %}
+</div>
+{% endblock %}

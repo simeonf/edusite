@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for page in pages %}
+<div class="front-page-cell">
+  <a href="./{{page.id}}">
+  <img src="./images/{{page.id}}/{{page['thumb']}}"><br>
+  <h3>{{page.title }}</h3></a>
+</div>
+{% endfor %}
+{% endblock %}
