@@ -17,9 +17,12 @@
     </style>      
     <style type="text/css" media="print,screen">
       body{font-family:'Alike', serif;}
+      nav{z-index:4;}
       #container{width:900px}
-      .front-page-cell{width:200px;height:180px;float:left;border:1px solid #BBB;padding:10px;}
-      .front-page-cell img, .detail-thumbnail {
+      .front-page-cell{width:140px;float:left;border:1px solid #BBB;padding:10px;
+                       padding-bottom:20px;background-color:#FFFEEB;z-index:2;text-align:center;}
+      .front-page-cell:hover{z-index:4;}
+      .front-page-cell, .detail-thumbnail {
           -moz-box-shadow: 3px 3px 5px #000;
           -webkit-box-shadow: 3px 3px 5px #000;
           box-shadow: 3px 3px 5px #000;
@@ -45,6 +48,14 @@
 	  -o-transition: opacity 1s ease-in-out;
 	  -ms-transition: opacity 1s ease-in-out;	
 	  transition: opacity 1s ease-in-out;}
+    {% for i in range(1,21) %}.rot_{{i}}{
+      position:absolute;
+       -webkit-transform: rotate({{randrange(-20,20)}}deg);
+       -moz-transform: rotate({{randrange(-20,20)}}deg);  
+       -ms-transform: rotate({{randrange(-20,20)}}deg);  
+       -o-transform: rotate({{randrange(-20,20)}}deg);  
+       transform: rotate({{randrange(-20,20)}}deg);  
+      }{% endfor %}
     
     </style>
   </head>
