@@ -1,4 +1,4 @@
-import sys, os, optparse, codecs, shutil, random
+import sys, os, optparse, codecs, shutil, random, glob
 from os.path import isdir
 from os.path import join as pjoin
 
@@ -16,12 +16,26 @@ def pick_three(lst, real):
     random.shuffle(lst)
     return lst
 
+def randrange_special(x, y, l):
+    # Hmm, provide normal distribution range with no points too close
+    lst = sorted([int(random.triangular(x,y)) for i in range(0,l)])
+    prev = lst[0]
+    for k,v in enumerate(lst[1:]):
+        if (v - 40) < prev:
+            lst[k+1] = v + 40
+        prev = lst[k+1]
+    return lst
+
 def parse():
     parser = optparse.OptionParser(usage='%prog [options] data-directory')
     parser.add_option('-o', '--output-dir', dest="output", default="./html")
-    parser.add_option('-t', '--templates-dir', dest="templates", default="./templates")
+    parser.add_option('-t', '--templates-dir', dest="templates",
+                      default="templates")
     parser.add_option('-m', '--media-dir', dest="media", default="./media")
-    parser.add_option('-v', '--verbose', default=False, action="store_true")
+    parser.add_option('-s', '--skip-images', action='store_true',
+                      dest="skip_images", default=False)
+    parser.add_option('-v', '--verbose', default=False,
+                      action="store_true")
     return parser.parse_args()
 
 def main(opts, args):
@@ -34,23 +48,25 @@ def main(opts, args):
     if not isdir(data_dir):
         raise SystemExit("Data directory %s does not exist." % args[0])
     if not isdir(opts.output):
-        raise SystemExit("Output path %s does not exist." % options.output)
+        raise SystemExit("Output path %s does not exist." % opts.output)
     image_dir = pjoin(opts.output, 'images')
     if not isdir(image_dir):
         os.mkdir(image_dir)
     if not isdir(opts.templates):
-        raise SystemExit("Templates path %s does not exist." % options.templates)
+        raise SystemExit("Templates path %s does not exist." % opts.templates)
     if not isdir(opts.media):
-        raise SystemExit("Media directory path %s does not exist." % options.media)
+        raise SystemExit("Media directory path %s does not exist." % opts.media)
     media_dir = opts.media
 
     # Set up template environment
     from jinja2 import Environment, PackageLoader
-    env = Environment(loader=PackageLoader('gensite', 'templates'))
+    env = Environment(loader=PackageLoader('gensite', opts.templates))
     env.filters['markdown'] = markdown.markdown
     env.globals['pick_three'] = pick_three
     env.globals['shuffle'] = random.shuffle
     env.globals['list'] = list
+    env.globals['randrange'] = random.randrange
+    
     # Find symbol directories
     dirs = [d for d in os.listdir(data_dir)
             if d[0] != "." and isdir(pjoin(data_dir, d))]
@@ -68,8 +84,15 @@ def main(opts, args):
             questions.append(data['facts'][q]['question'])
             answers.append(data['facts'][q]['answer'])
         pages.append(data)
+    # Generate random coords list
+    lst = randrange_special(0, 500, len(pages))
+    random.shuffle(lst)
+    lst2 = list(lst)
+    random.shuffle(lst2)
     # For each page generate study page, resizing and copying images
-    for page in pages:
+    for i, page in enumerate(pages):
+        page['rand1'] = lst[i]
+        page['rand2'] = lst2[i]
         page_images = pjoin(image_dir, page['id'])
         if not isdir(page_images):
             os.mkdir(page_images)
@@ -80,10 +103,11 @@ def main(opts, args):
                  ('thumb', (140, 140))]
         for (name, size) in sizes:
             orig = pjoin(page['path'], page['image'])
-            im = Image.open(orig)
-            im.thumbnail(size, Image.ANTIALIAS)
             outfile = os.path.splitext(orig)[0] + ".%s.jpg" % name
-            im.save(outfile, "JPEG")
+            if not opts.skip_images:
+                im = Image.open(orig)
+                im.thumbnail(size, Image.ANTIALIAS)
+                im.save(outfile, "JPEG")
             page[name] = os.path.basename(outfile)
             # Copy resized images to output dir
             shutil.copyfile(outfile,
@@ -94,7 +118,10 @@ def main(opts, args):
         f.close()
 
     # Generate index.html, matching pages, quiz pages, essay page
-    for name in ['index.html', 'quiz.html', 'essay.html', 'match.html']:
+    # Get all templates not starting with base
+    templates = [os.path.basename(i) for i in glob.glob(pjoin(opts.templates, "*.html"))]
+    templates = list(set(templates) - set(['base.html', 'detail.html']))
+    for name in templates:
         template = env.get_template(name)
         q = zip(questions, answers)
         random.shuffle(q)
