@@ -1,0 +1,122 @@
+<html>
+  <head>
+    <title>{{ title }}{% block title%}{% endblock %}</title>
+    <link rel="stylesheet" href="./media/menu.css">
+    <link href='http://fonts.googleapis.com/css?family=Alike' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(function(){
+          $(".lightbox").click(function(){$("#fade, #light").show();});
+          $("#fade").click(function(){$("#fade, #light").hide();});
+          $("dt").click(function(){$(this).next().addClass("visible");});
+      });
+    </script>
+    <style type="text/css" media="print">
+      nav{display:none;}
+      #header{display:none;}
+      #footer{display:none;}
+      .printer-hide{display:none;}
+    </style>      
+    <style type="text/css" media="print,screen">
+      body{font-family:'Alike', serif;margin:0;}
+      nav{z-index:4;}
+      #header{background-image: url("./media/header.png");
+              background-position: top right;
+              background-repeat:no-repeat;
+              }
+      #footer{font-family: 'Annie User Your Telescope', cursive;
+              font-size:12px;color:#444;padding:5px 10px;border-top:1px solid #333;
+              clear:both;margin-top:10px;}
+      #container{width:900px}
+      #content{padding-left:10px;}
+      .front-page-cell{width:140px;float:left;border:1px solid #BBB;padding:10px;
+                       padding-bottom:20px;background-color:#FFFEEB;z-index:2;text-align:center;}
+      .front-page-cell:hover{z-index:4;}
+      .front-page-cell, .detail-thumbnail {
+          -moz-box-shadow: 3px 3px 5px #000;
+          -webkit-box-shadow: 3px 3px 5px #000;
+          box-shadow: 3px 3px 5px #000;
+      }
+
+    .black_overlay{ display: none;
+        position: absolute; top: 0%; left: 0%; width: 100%;
+        height: 100%; background-color: black; z-index:1001;
+        -moz-opacity: 0.8; opacity:.80; filter: alpha(opacity=80);
+    }
+
+    .white_content { display: none;
+        position: absolute; top: 10%;
+        left: 10%; width: 80%; height: 80%; padding: 16px;
+        border: 16px solid orange; background-color: white;
+        z-index:1002; overflow: auto;
+    }
+    dl dd{opacity:0;margin-bottom:20px;background-color:orange;}
+    dl dt{font-weight:bold;cursor:pointer;}
+    .visible{opacity:1;
+      -webkit-transition: opacity 1s ease-in-out;
+	  -moz-transition: opacity 1s ease-in-out;
+	  -o-transition: opacity 1s ease-in-out;
+	  -ms-transition: opacity 1s ease-in-out;	
+	  transition: opacity 1s ease-in-out;}
+
+    dd{width:400px;}
+    </style>
+  </head>
+  <body>
+    <div id="container">  
+      <div id="header">
+        <h1 style="padding-left:10px;margin:0;height:80px;line-height:80px;">United States Symbols</h1>
+        <nav>
+        <ul id="menu">
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="./{{ pages.0.id }}.html">Pages</a>
+              <ul>
+              {% for page in pages %}
+              <li><a href="./{{ page.id }}.html">{{ page.title }}</a></li>
+              {% endfor %}
+              </ul>
+          </li>
+          <li><a href="./quiz.html">Quiz</a>
+              <ul>
+                <li><a href="./quiz1.html">Quiz #2</a></li>
+                <li><a href="./quiz2.html">Quiz #3</a></li>
+                <li><a href="./quiz3.html">Quiz #4</a></li>
+                <li><a href="./quiz4.html">Quiz #5</a></li>
+              </ul>
+          </li>
+          <li><a href="./essay.html">Study Sheet</a></li>
+          <li><a href="./match.html">Matching</a>
+              <ul>
+                <li><a href="./match1.html">Match #2</a></li>
+              </ul>
+          </li>
+          <li><a href="./game.html">Memory Game</a>
+            <ul>
+                <li><a href="./game2.html">Memory Game #2</a></li>
+            </ul>
+          </li>
+          <li><a href="./go-fish.html">Go Fish</a></li>          
+          <li><a href="./about.html">About</a></li>
+        </ul>
+        </nav>
+      </div>
+      <div id="content">
+        {% block content %}
+        {% endblock %}
+      </div>
+      <div id="footer">
+        <p>Site by Simeon Franklin for Liz<br> All information and
+           media comes from wikipedia.com and is released
+           under <a href="http://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License">Creative Commons Sharealike</a> license. See individual pages for citations.</p>
+      </div>      
+    </div>
+    <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+      _uacct = "UA-1803191-1";
+      urchinTracker();
+    </script>
+  </body>
+</html>
+

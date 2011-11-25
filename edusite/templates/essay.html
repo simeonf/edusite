@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Study Sheet</h1> 
+<p>Write a sentence about each topic below.
+<ol>
+ {% for page in pages %}
+ <li>{{ page.title }}
+   <div style="height:20px;border-bottom:1px solid black;"></div>
+   <div style="height:20px;border-bottom:1px solid black;"></div>
+   <div style="height:20px;border-bottom:1px solid black;"></div>
+   <br>
+ </li>
+ {% endfor %}
+</ol> 
+{% endblock %}

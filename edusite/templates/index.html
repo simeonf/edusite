@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style type="text/css">
+    {% for i in range(1,21) %}.rot_{{i}}{
+      position:absolute;
+       -webkit-transform: rotate({{random.randrange(-20,20)}}deg);
+       -moz-transform: rotate({{random.randrange(-20,20)}}deg);  
+       -ms-transform: rotate({{random.randrange(-20,20)}}deg);  
+       -o-transform: rotate({{random.randrange(-20,20)}}deg);  
+       transform: rotate({{random.randrange(-20,20)}}deg);  
+      }{% endfor %}
+</style>
+<div style="height:600px;">
+{% for page in pages %}
+<div class="front-page-cell rot_{{ loop.index }}" style="top:{{(page.rand1 + 110)/2 }}px;left:{{page.rand2 - 80}}px;">
+  <a href="./{{page.id}}.html">
+  <img src="./images/{{page.id}}/{{page['thumb']}}"><br>
+  <h3>{{page.title }}</h3></a>
+</div>
+{% endfor %}
+</div>
+{% endblock %}
