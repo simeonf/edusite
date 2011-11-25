@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style type="text/css">
+#deck td{border:1px dashed #333;width:120px;height:180px;}
+#deck td div{border:1px solid #333;margin:2px;padding:5px;text-align:center;height:180px}
+#deck td h3{font-size:14px}
+#deck tr.row_4{page-break-after:always;}
+#deck tr.row_8{page-break-after:always;}
+</style>
+<div class="printer-hide">
+<h2>Go Fish Cards</h2>
+<p>Print this page and carefully cut out the cards on the dotted
+lines. Cardstock makes for nicer cards than regular printer
+paper. See <a href="http://en.wikipedia.org/wiki/Go_fish">Wikipedia</a>
+if you don't know how to play :)
+</p></div>
+<table id="deck">
+{% for p in random.sample(pages,10) %}
+{% set rowloop = loop %}
+<tr class="row_{{ rowloop.index }}">
+  {% for i in range(0,4) %}
+  <td>
+    <div>
+    <img height="100" src="./images/{{p.id}}/{{p['thumb']}}"><br>
+    <h3>{{p.title }}</h3>
+    </div>
+  </td>
+  {% endfor %}
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

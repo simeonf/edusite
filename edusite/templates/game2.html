@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!--    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>-->
+    <script type="text/javascript" src="./media/jquery.color.js"></script>    
+    <style type="text/css">
+      #game{width:860px;padding:0px;margin:0px;}
+      #game li{border:1px solid #000;width:110px;float:left;list-style-type:none;
+               height:115px;text-align:center;vertical-align:middle;background-color:#FFF;
+               overflow:hide;}
+      #game li img{width:80px;}
+      .show{display:inline;}
+      .text p{display:none;}
+      p{font-weight:bold}
+    </style>
+    <script type="text/javascript">
+
+      answers = []
+      {% for page in pages %}
+        answers.push(['./images/{{page.id}}/{{page['thumb']}}', './images/{{page.id}}/{{page['thumb']}}']);
+      {% endfor %}
+
+      function randorder(){return (Math.round(Math.random())-0.5); }
+
+      newlist = []
+      for(var i in answers){
+          newlist.push({'pair':i, 'url': answers[i][1], 'name':''});
+          newlist.push({'pair':i, 'url': answers[i][1], 'name':''});
+      }
+
+      newlist.sort(randorder);
+
+      $(function(){
+          game = $("#game");
+          for(i in newlist){       
+            classname = "answer_" + newlist[i].pair;
+            if(newlist[i].url)
+                game.append("<li class='img " + classname + "'>" + 
+                               "<img id='a_" + i + "' style='display:none'" + 
+                                    "class='" + classname + "' src='" +
+                                    newlist[i].url + "'></li>");
+            else
+                game.append("<li class='text " + classname + "'><p class='" + classname +
+                              "' id='a_" + i + "'>" + newlist[i].name + "</p></li>");
+          }
+          $("li.img, li.text").click(click_piece);
+      });
+
+      var first_answer = false;
+      var second_answer = false;
+      var moves = 1;
+      function click_piece(){
+          var child = $(this).children()[0];
+          if($('#' + child.id + ":visible").length==0){
+              $(child).show();
+              if(first_answer == false)
+                  first_answer = child;
+              else if(second_answer == false)
+                  second_answer = child;
+          }
+          handle_play();
+      }
+      
+      function handle_play(){
+        //Got two answers
+        $("#instructions").text(moves + " clicks.");
+        moves += 1;
+        if(first_answer && second_answer){
+            if(first_answer.className == second_answer.className){
+              $("li." + first_answer.className).unbind("click");
+              $("li." + second_answer.className).unbind("click");
+              first_answer = second_answer = false;
+            }
+            else{
+              $(first_answer).fadeOut(1500);
+              $(second_answer).fadeOut(1500);
+              first_answer = second_answer = false;
+            }
+        }
+      }
+   </script>
+  </head>
+<body>
+<p>Click the squares to show the pieces - match two pieces to keep
+them face up. How many moves does it take to win?  </p>
+<p id="instructions"></p>
+<div id="game_container">
+  <ul id="game">
+  </ul>
+</div><br>
+{% endblock %}
+
+
