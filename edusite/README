@@ -1,0 +1,10 @@
+edusite contains a script and necessary templates to build a small
+educational website (see http://metapundit.net/school/symbols/).
+
+Supply your own yaml files (see sample dir) and run with 
+
+    python buildscript.py ./samples
+
+and see produced output in ./html
+    
+
